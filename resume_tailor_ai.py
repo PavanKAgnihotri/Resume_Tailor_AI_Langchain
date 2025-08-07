@@ -98,7 +98,7 @@ def build_faiss_vectorstore(docs, vectors, embedding_model, save_path="resume_ve
     text_embeddings = [(doc.page_content, vectors[i].tolist()) for i, doc in enumerate(docs)]
     faiss_store = FAISS.from_embeddings(text_embeddings=text_embeddings, embedding=embedding_model)
     faiss_store.save_local(save_path)
-    print(f"✅ FAISS vectorstore saved at: {save_path}")
+    print(f"FAISS vectorstore saved at: {save_path}")
 
 # === MAIN Pipeline ===
 def process_resume(pdf_path):
@@ -115,14 +115,14 @@ def process_resume(pdf_path):
     docs = chunk_text_with_metadata(text, links)
     #print(docs)
 
-    print("🔗 Embedding and normalizing with Gemini...")
+    print("Embedding and normalizing with Gemini...")
     
     model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=GOOGLE_API_KEY)
     embedded_docs, norm_vectors = embed_and_normalize_documents(docs, model)
     #print(embedded_docs)
     #print(norm_vectors)
 
-    print("💾 Building FAISS vectorstore...")
+    print("Building FAISS vectorstore...")
     build_faiss_vectorstore(embedded_docs, norm_vectors, model)
 
 
@@ -153,7 +153,7 @@ def process_jd_string(jd_text: str, save_path="jd_vectorstore"):
     model_jd = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=GOOGLE_API_KEY)
     embedded_docs_jd, norm_vectors_jd = embed_and_normalize_documents(docs_jd, model_jd)
 
-    print("💾 Saving JD FAISS vectorstore...")
+    print("Saving JD FAISS vectorstore...")
     build_faiss_vectorstore_jd(embedded_docs_jd, norm_vectors_jd, model_jd)
 
 if __name__ == "__main__":
@@ -196,7 +196,7 @@ embedding_model = GoogleGenerativeAIEmbeddings(model="models/embedding-001", goo
 
 # === Load vectorstores ===
 def load_vectorstores(resume_path="resume_vectorstore", jd_path="jd_vectorstore"):
-    print("📥 Loading vectorstores...")
+    print("Loading vectorstores...")
     
     resume_store = FAISS.load_local(resume_path, embedding_model, allow_dangerous_deserialization=True)
     jd_store = FAISS.load_local(jd_path, embedding_model, allow_dangerous_deserialization=True)
@@ -211,7 +211,7 @@ def load_vectorstores(resume_path="resume_vectorstore", jd_path="jd_vectorstore"
 
 # === Compute cosine similarity matrix ===
 def compute_similarity_matrix(resume_vectors, jd_vectors):
-    print("🧠 Computing cosine similarity...")
+    print("Computing cosine similarity...")
     sim_matrix = np.dot(jd_vectors, resume_vectors.T)  # dot product of normalized vectors = cosine similarity
     return sim_matrix
 
