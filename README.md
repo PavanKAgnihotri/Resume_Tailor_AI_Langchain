@@ -7,6 +7,70 @@ This project provides a pipeline to semantically match your resume content again
   Python 3.11 or higher
   Access to the Google Gemini API. You will need a Google API key.
 
+LangChain + LangGraph Architecture
+This project leverages LangChain and LangGraph to orchestrate a multi-step, intelligent pipeline that dynamically rewrites a user’s resume based on a provided job description (JD). The final output is a tailored PDF resume optimized for both human readability and ATS systems.
+
+What is LangChain?
+LangChain is an open-source framework designed to build applications powered by language models. It provides the building blocks for:
+  Prompt templates
+  Vector stores
+  Embedding models
+  Memory
+  Chains and agents
+
+In this project, we use LangChain to:
+  Embed both resume and job description chunks using Google Gemini
+  Store and query these embeddings using FAISS vector stores
+  Manage and interact with documents and LLMs in a modular way
+
+What is LangGraph?
+LangGraph is a powerful extension of LangChain that allows developers to define multi-step workflows using stateful directed graphs.
+It provides:
+  Graph-based control flow (like DAGs)
+  State management across nodes
+  Retries, loops, and branching
+  Reusability and modular orchestration
+
+How LangGraph Is Used in This Project
+The resume tailoring pipeline is implemented as a LangGraph consisting of the following nodes:
+              ┌──────────────┐
+              │ resume_parser│ ← extracts resume text & links from PDF
+              └──────┬───────┘
+                     ↓
+              ┌──────────────┐
+              │   jd_parser  │ ← splits JD into semantic chunks
+              └──────┬───────┘
+                     ↓
+              ┌──────────────┐
+              │   embedder   │ ← embeds resume & JD chunks using Gemini + LangChain
+              └──────┬───────┘
+                     ↓
+              ┌──────────────┐
+              │   matcher    │ ← compares JD ↔ resume via cosine similarity
+              └──────┬───────┘
+                     ↓
+              ┌──────────────┐
+              │   rewriter   │ ← rewrites matching resume bullets using Gemini LLM
+              └──────┬───────┘
+                 
+LangChain Components Used
+GoogleGenerativeAIEmbeddings: Embeds resume + JD chunks using Gemini
+FAISS: Stores and retrieves vector embeddings
+Document:	Wraps each text chunk for LangChain processing
+RecursiveTextSplitter: Breaks resume/JD into semantically useful chunks
+LLM (Gemini 2.5 Flash):	Rewrites resume bullets to match JD tone
+
+Benefits of Using LangChain + LangGraph
+Modularity: Each step (e.g., parsing, embedding, rewriting) is isolated and reusable
+
+Scalability: Easily supports multiple resumes and job descriptions
+
+Extensibility: Add new nodes for cover letter generation, grammar checking, interview Q&A, etc.
+
+Resilience: LangGraph handles retry logic and intermediate state recovery
+
+Transparency: You can inspect state at every node for debugging or analytics
+
 **Project Workflow**
 The project follows these main steps:
 
