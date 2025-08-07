@@ -31,7 +31,7 @@ It provides:
   Retries, loops, and branching
   Reusability and modular orchestration
 
-How LangGraph Is Used in This Project
+How LangGraph Is Used in This Project (resume_tailor_ai.zip)
 The resume tailoring pipeline is implemented as a LangGraph consisting of the following nodes:
               ┌──────────────┐
               │ resume_parser│ ← extracts resume text & links from PDF
